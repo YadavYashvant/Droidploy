@@ -6,12 +6,12 @@ plugins {
 
 android {
     namespace = "com.example.droidploy"
-    compileSdk = 36
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.example.droidploy"
         minSdk = 24
-        targetSdk = 36
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -37,6 +37,11 @@ android {
     buildFeatures {
         compose = true
     }
+    packaging {
+        jniLibs {
+            useLegacyPackaging = true
+        }
+    }
 }
 
 dependencies {
@@ -57,4 +62,8 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    implementation(libs.retrofit.core)
+    implementation(libs.retrofit.gson)
+    implementation(libs.okhttp.core)
+    implementation(libs.okhttp.logging)
 }
