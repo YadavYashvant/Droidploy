@@ -48,6 +48,11 @@ class ServerService : Service() {
         val zoneId = intent?.getStringExtra("ZONE_ID")
         val domain = intent?.getStringExtra("DOMAIN")
 
+        // Ensure demo server exists if project path is the default
+        if (projectPath != null && projectPath.contains("my_server")) {
+            ensureDemoServerExists()
+        }
+
         if (projectPath != null && apiToken != null && accountId != null &&
             zoneId != null && domain != null) {
 
@@ -209,14 +214,22 @@ class ServerService : Service() {
             val nativeDir = applicationInfo.nativeLibraryDir
             val cloudflaredExecutable = File(nativeDir, "libcloudflared.so").absolutePath
 
+            // Use hardcoded Cloudflare edge IP addresses to bypass DNS
             val processBuilder = ProcessBuilder(
                 cloudflaredExecutable,
                 "tunnel",
+                "--no-autoupdate",
+                "--protocol", "quic",
+                "--edge-ip-version", "4",
+                "--edge", "198.41.192.167:7844",  // Hardcoded Cloudflare edge IP
                 "run",
                 "--token",
                 token
             )
             processBuilder.redirectErrorStream(true)
+
+            // Set working directory
+            processBuilder.directory(cacheDir)
 
             val process = processBuilder.start()
             tunnelProcess = process
@@ -233,6 +246,45 @@ class ServerService : Service() {
         } catch (e: Exception) {
             e.printStackTrace()
             updateNotification("✗ Tunnel failed: ${e.message}")
+        }
+    }
+
+    private fun ensureDemoServerExists() {
+        // Logic to create demo server files in the default project path
+        try {
+            val defaultProjectPath = "/data/data/${packageName}/files/my_server"
+            val indexJsContent = """
+                const http = require('http');
+                const port = 8080;
+
+                const requestHandler = (request, response) => {
+                    response.end('Hello from the demo server!');
+                }
+
+                const server = http.createServer(requestHandler);
+
+                server.listen(port, (err) => {
+                    if (err) {
+                        return console.log('Something bad happened', err);
+                    }
+
+                    console.log(`Server is listening on port 8080`);
+                });
+            """.trimIndent()
+
+            val projectDir = File(defaultProjectPath)
+            if (!projectDir.exists()) {
+                projectDir.mkdirs()
+            }
+
+            // Create index.js file
+            val indexJsFile = File(projectDir, "index.js")
+            if (!indexJsFile.exists()) {
+                indexJsFile.writeText(indexJsContent)
+            }
+
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
