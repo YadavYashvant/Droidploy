@@ -1,22 +1,32 @@
 package com.example.droidploy.ui.screens
 
+import android.content.BroadcastReceiver
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.net.Uri
 import android.os.Build
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.droidploy.data.PreferencesManager
 import com.example.droidploy.service.ServerService
 import com.example.droidploy.ui.components.CustomButton
@@ -35,6 +45,30 @@ fun DashboardScreen(paddingValues: PaddingValues, onSettingsClick: () -> Unit) {
     var commandText by remember { mutableStateOf(prefsManager.getLastCommand()) }
     var statusMessage by remember { mutableStateOf("") }
     var isDeploying by remember { mutableStateOf(false) }
+    var serverUrl by remember { mutableStateOf<String?>(null) }
+
+    // Set up broadcast receiver for server status updates
+    DisposableEffect(Unit) {
+        val receiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                val message = intent?.getStringExtra(ServerService.EXTRA_STATUS_MESSAGE)
+                val url = intent?.getStringExtra(ServerService.EXTRA_SERVER_URL)
+                if (message != null) {
+                    statusMessage = message
+                }
+                if (url != null) {
+                    serverUrl = url
+                }
+            }
+        }
+
+        val filter = IntentFilter(ServerService.ACTION_SERVER_STATUS)
+        LocalBroadcastManager.getInstance(context).registerReceiver(receiver, filter)
+
+        onDispose {
+            LocalBroadcastManager.getInstance(context).unregisterReceiver(receiver)
+        }
+    }
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenDocument()
@@ -42,7 +76,7 @@ fun DashboardScreen(paddingValues: PaddingValues, onSettingsClick: () -> Unit) {
         uri?.let {
             scope.launch {
                 statusMessage = "Importing project..."
-                val path = FileManager.copyProjectFromUri(context, it, "my_server")
+                val path = FileManager.copyProjectFromUri(context, it)
                 if (path != null) {
                     projectPath = path
                     statusMessage = "✓ Project imported successfully"
@@ -161,7 +195,7 @@ fun DashboardScreen(paddingValues: PaddingValues, onSettingsClick: () -> Unit) {
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Status Card
+            // Status Card - Show server URL when available
             if (isDeploying) {
                 Card(
                     modifier = Modifier
@@ -183,12 +217,63 @@ fun DashboardScreen(paddingValues: PaddingValues, onSettingsClick: () -> Unit) {
                                 color = Color.Green
                             )
                         )
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text(
-                            "Check notifications for status",
-                            fontSize = 12.sp,
-                            color = Color.Gray
-                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        if (serverUrl != null) {
+                            // Clickable URL Row
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Text(
+                                        text = serverUrl!!,
+                                        style = TextStyle(
+                                            fontWeight = FontWeight.Medium,
+                                            fontSize = 14.sp,
+                                            color = MaterialTheme.colorScheme.primary,
+                                            textDecoration = TextDecoration.Underline
+                                        ),
+                                        modifier = Modifier.clickable {
+                                            // Open URL in browser
+                                            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(serverUrl))
+                                            context.startActivity(browserIntent)
+                                        }
+                                    )
+                                    Spacer(modifier = Modifier.height(4.dp))
+                                    Text(
+                                        "Tap URL to open in browser",
+                                        fontSize = 11.sp,
+                                        color = Color.Gray
+                                    )
+                                }
+
+                                // Copy Button
+                                Button(
+                                    onClick = {
+                                        // Copy URL to clipboard
+                                        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                                        val clip = ClipData.newPlainText("Server URL", serverUrl)
+                                        clipboard.setPrimaryClip(clip)
+                                        Toast.makeText(context, "✓ URL copied!", Toast.LENGTH_SHORT).show()
+                                    },
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                                    ),
+                                    modifier = Modifier.padding(start = 8.dp)
+                                ) {
+                                    Text("📋 Copy", fontSize = 12.sp)
+                                }
+                            }
+                        } else {
+                            Text(
+                                "Check notifications for status",
+                                fontSize = 12.sp,
+                                color = Color.Gray
+                            )
+                        }
                     }
                 }
             }
@@ -220,6 +305,7 @@ fun DashboardScreen(paddingValues: PaddingValues, onSettingsClick: () -> Unit) {
                         val intent = Intent(context, ServerService::class.java)
                         context.stopService(intent)
                         isDeploying = false
+                        serverUrl = null
                         statusMessage = "Server stopped"
                     } else {
                         if (projectPath != null && prefsManager.isConfigured()) {

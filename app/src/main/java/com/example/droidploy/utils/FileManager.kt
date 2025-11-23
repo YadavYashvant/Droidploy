@@ -8,22 +8,21 @@ import java.util.zip.ZipInputStream
 
 object FileManager {
 
-    fun copyProjectFromUri(context: Context, uri: Uri, destName: String): String? {
+    fun copyProjectFromUri(context: Context, uri: Uri, destName: String = "user_project_${System.currentTimeMillis()}"): String? {
+        val tempDir = File(context.filesDir, "${destName}_temp")
         val destDir = File(context.filesDir, destName)
+
+        if (tempDir.exists()) tempDir.deleteRecursively()
         if (destDir.exists()) destDir.deleteRecursively()
-        destDir.mkdirs()
+        tempDir.mkdirs()
 
         try {
             context.contentResolver.openInputStream(uri)?.use { inputStream ->
-                // Check if it's a zip file (magic bytes PK)
-                // For simplicity, we assume the user selects a zip file for now
-                // or a folder if using ACTION_OPEN_DOCUMENT_TREE (which requires different handling)
-                
-                // If it's a zip:
+                // Extract zip to temporary directory
                 ZipInputStream(inputStream).use { zipStream ->
                     var entry = zipStream.nextEntry
                     while (entry != null) {
-                        val newFile = File(destDir, entry.name)
+                        val newFile = File(tempDir, entry.name)
                         if (entry.isDirectory) {
                             newFile.mkdirs()
                         } else {
@@ -37,9 +36,34 @@ object FileManager {
                     }
                 }
             }
+
+            // Check if there's a single root folder and flatten if needed
+            val extractedFiles = tempDir.listFiles() ?: emptyArray()
+
+            if (extractedFiles.size == 1 && extractedFiles[0].isDirectory) {
+                // Single root folder detected, move its contents to destDir
+                val rootFolder = extractedFiles[0]
+                rootFolder.renameTo(destDir)
+                tempDir.deleteRecursively()
+                android.util.Log.d("FileManager", "Flattened single root folder structure")
+            } else {
+                // Multiple files/folders at root, just rename temp to dest
+                tempDir.renameTo(destDir)
+            }
+
+            android.util.Log.d("FileManager", "Project extracted to: ${destDir.absolutePath}")
+
+            // List extracted files for debugging
+            destDir.listFiles()?.forEach { file ->
+                android.util.Log.d("FileManager", "Extracted: ${file.name}")
+            }
+
             return destDir.absolutePath
         } catch (e: Exception) {
             e.printStackTrace()
+            android.util.Log.e("FileManager", "Failed to extract project", e)
+            tempDir.deleteRecursively()
+            destDir.deleteRecursively()
             return null
         }
     }
