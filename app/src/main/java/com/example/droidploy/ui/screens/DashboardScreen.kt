@@ -76,7 +76,7 @@ fun DashboardScreen(paddingValues: PaddingValues, onSettingsClick: () -> Unit) {
         uri?.let {
             scope.launch {
                 statusMessage = "Importing project..."
-                val path = FileManager.copyProjectFromUri(context, it, "my_server")
+                val path = FileManager.copyProjectFromUri(context, it)
                 if (path != null) {
                     projectPath = path
                     statusMessage = "✓ Project imported successfully"

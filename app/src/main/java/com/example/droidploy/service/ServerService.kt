@@ -58,8 +58,8 @@ class ServerService : Service() {
         val zoneId = intent?.getStringExtra("ZONE_ID")
         val domain = intent?.getStringExtra("DOMAIN")
 
-        // Ensure demo server exists if project path is the default
-        if (projectPath != null && projectPath.contains("my_server")) {
+        // Only create demo server if NO project path is provided (first launch scenario)
+        if (projectPath == null) {
             ensureDemoServerExists()
         }
 
@@ -267,8 +267,7 @@ class ServerService : Service() {
     private fun ensureDemoServerExists() {
         // Only create demo server if no user files exist
         try {
-            val defaultProjectPath = "/data/data/${packageName}/files/my_server"
-            val projectDir = File(defaultProjectPath)
+            val projectDir = File(filesDir, "my_server")
 
             // Check if directory exists and has an index.js file
             val indexJsFile = File(projectDir, "index.js")
@@ -301,11 +300,11 @@ class ServerService : Service() {
                             <head>
                                 <title>Droidploy Demo</title>
                                 <style>
-                                    body { font-family: system-ui; max-width: 800px; margin: 50px auto; padding: 20px; 
+                                    body { font-family: system-ui; max-width: 800px; margin: 50px auto; padding: 20px;
                                            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
                                     .container { background: rgba(255,255,255,0.1); padding: 40px; border-radius: 20px; }
                                     h1 { font-size: 2.5em; margin: 0; }
-                                    .status { background: #10b981; padding: 10px 20px; border-radius: 25px; 
+                                    .status { background: #10b981; padding: 10px 20px; border-radius: 25px;
                                              display: inline-block; margin: 20px 0; font-weight: bold; }
                                 </style>
                             </head>
