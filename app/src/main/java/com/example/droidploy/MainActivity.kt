@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.navigation.compose.rememberNavController
 import com.example.droidploy.ui.NavigationGraph
 import com.example.droidploy.ui.theme.DroidployTheme
@@ -24,7 +25,7 @@ class MainActivity : ComponentActivity() {
             DroidployTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    color = Color.Black
                 ) {
                     MainScreen()
                 }
