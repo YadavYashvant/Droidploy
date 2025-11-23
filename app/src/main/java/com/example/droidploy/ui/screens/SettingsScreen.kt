@@ -1,5 +1,6 @@
 package com.example.droidploy.ui.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -35,6 +36,7 @@ fun SettingsScreen(
         modifier = Modifier
             .fillMaxSize()
             .padding(paddingValues)
+            .background(Color.Black)
             .padding(horizontal = 12.dp)
     ) {
         // Header
@@ -65,6 +67,7 @@ fun SettingsScreen(
                 .fillMaxWidth()
                 .wrapContentHeight()
                 .padding(horizontal = 8.dp, vertical = 8.dp),
+//            colors = CardDefaults.cardColors(),
             elevation = CardDefaults.cardElevation(4.dp)
         ) {
             Column(

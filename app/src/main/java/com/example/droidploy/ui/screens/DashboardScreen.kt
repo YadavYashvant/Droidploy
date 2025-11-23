@@ -11,8 +11,10 @@ import android.os.Build
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
@@ -91,6 +93,7 @@ fun DashboardScreen(paddingValues: PaddingValues, onSettingsClick: () -> Unit) {
         modifier = Modifier
             .fillMaxSize()
             .padding(paddingValues)
+            .background(Color.Black)
             .padding(horizontal = 12.dp),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
@@ -98,12 +101,13 @@ fun DashboardScreen(paddingValues: PaddingValues, onSettingsClick: () -> Unit) {
             Row(
                 modifier = Modifier
                     .padding(horizontal = 8.dp, vertical = 8.dp)
+                    .padding(top = 16.dp)
                     .fillMaxWidth()
                     .wrapContentHeight(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    "Deploy Server", style = TextStyle(
+                    "Droidploy \uD83D\uDDA5\uFE0F", style = TextStyle(
                         fontWeight = FontWeight.ExtraBold,
                         fontSize = 24.sp
                     )
@@ -122,6 +126,7 @@ fun DashboardScreen(paddingValues: PaddingValues, onSettingsClick: () -> Unit) {
                     .fillMaxWidth()
                     .wrapContentHeight()
                     .padding(horizontal = 8.dp, vertical = 12.dp),
+                shape = RoundedCornerShape(8.dp),
                 elevation = CardDefaults.cardElevation(4.dp)
             ) {
                 Column(
@@ -174,6 +179,7 @@ fun DashboardScreen(paddingValues: PaddingValues, onSettingsClick: () -> Unit) {
                     .fillMaxWidth()
                     .wrapContentHeight()
                     .padding(horizontal = 8.dp, vertical = 12.dp),
+                shape = RoundedCornerShape(8.dp),
                 elevation = CardDefaults.cardElevation(4.dp)
             ) {
                 Column(
