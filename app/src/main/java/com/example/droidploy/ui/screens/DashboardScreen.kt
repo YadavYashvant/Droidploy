@@ -94,14 +94,15 @@ fun DashboardScreen(paddingValues: PaddingValues, onSettingsClick: () -> Unit) {
             .fillMaxSize()
             .padding(paddingValues)
             .background(Color.Black)
-            .padding(horizontal = 12.dp),
+            .padding(horizontal = 12.dp)
+            .padding(top = 16.dp)
+        ,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Column {
             Row(
                 modifier = Modifier
                     .padding(horizontal = 8.dp, vertical = 8.dp)
-                    .padding(top = 16.dp)
                     .fillMaxWidth()
                     .wrapContentHeight(),
                 horizontalArrangement = Arrangement.SpaceBetween
@@ -133,10 +134,10 @@ fun DashboardScreen(paddingValues: PaddingValues, onSettingsClick: () -> Unit) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentHeight()
-                        .padding(8.dp)
+                        .padding(12.dp)
                 ) {
                     CustomText("Project Source")
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(12.dp))
                     CustomButton(
                         text = "IMPORT PROJECT (ZIP/FOLDER)",
                         modifier = Modifier
@@ -146,6 +147,7 @@ fun DashboardScreen(paddingValues: PaddingValues, onSettingsClick: () -> Unit) {
                             containerColor = Color.DarkGray,
                             contentColor = Color.White
                         ),
+                        shape = RoundedCornerShape(8.dp),
                         onClick = {
                             launcher.launch(arrayOf("application/zip", "application/octet-stream"))
                         }
@@ -161,7 +163,7 @@ fun DashboardScreen(paddingValues: PaddingValues, onSettingsClick: () -> Unit) {
                     }
 
                     if (statusMessage.isNotEmpty()) {
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(12.dp))
                         Text(
                             statusMessage,
                             fontSize = 12.sp,
