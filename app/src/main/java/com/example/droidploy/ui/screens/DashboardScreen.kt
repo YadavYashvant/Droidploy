@@ -139,7 +139,7 @@ fun DashboardScreen(paddingValues: PaddingValues, onSettingsClick: () -> Unit) {
                     CustomText("Project Source")
                     Spacer(modifier = Modifier.height(12.dp))
                     CustomButton(
-                        text = "IMPORT PROJECT (ZIP/FOLDER)",
+                        text = "IMPORT PROJECT ZIP",
                         modifier = Modifier
                             .wrapContentHeight()
                             .fillMaxWidth(),
