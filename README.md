@@ -146,7 +146,7 @@ See the [attached research document](#) for the full 8000-word deep dive on why 
 
 ```bash
 # Clone the repo
-git clone https://github.com/yourusername/droidploy.git
+git clone https://github.com/YadavYashvant/droidploy.git
 cd droidploy
 
 # Add binaries to jniLibs
@@ -184,26 +184,3 @@ PRs welcome! Some ideas:
 - [ ] Auto-restart on crashes
 - [ ] Server monitoring dashboard
 - [ ] Multiple tunnel support
-
-## License
-
-MIT License - Do whatever you want with this!
-
-## Credits
-
-Built by a developer who thought "can my phone run a server?" and went down a rabbit hole.
-
-Special thanks to:
-- The Android security team for making this unnecessarily hard
-- Cloudflare for having a great API
-- Node.js for being portable enough to run anywhere
-
-## Support
-
-Having issues? Open an issue on GitHub or tweet at me (if I remember to add my Twitter here).
-
----
-
-**Warning:** Running servers on your phone might make you look like a wizard to your non-technical friends. Use responsibly.
-
-Made with ☕ and questionable life choices.
