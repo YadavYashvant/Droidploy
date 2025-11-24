@@ -131,8 +131,6 @@ Android 10+ blocks execution of binaries from writable directories. We bypass th
 - Creates DNS CNAME automatically
 - Uses QUIC protocol with hardcoded edge IPs (DNS workaround)
 
-See the [attached research document](#) for the full 8000-word deep dive on why this is so complicated 😅
-
 ## Tech Stack
 
 - **Kotlin** - Android app
@@ -184,26 +182,3 @@ PRs welcome! Some ideas:
 - [ ] Auto-restart on crashes
 - [ ] Server monitoring dashboard
 - [ ] Multiple tunnel support
-
-## License
-
-MIT License - Do whatever you want with this!
-
-## Credits
-
-Built by a developer who thought "can my phone run a server?" and went down a rabbit hole.
-
-Special thanks to:
-- The Android security team for making this unnecessarily hard
-- Cloudflare for having a great API
-- Node.js for being portable enough to run anywhere
-
-## Support
-
-Having issues? Open an issue on GitHub or tweet at me (if I remember to add my Twitter here).
-
----
-
-**Warning:** Running servers on your phone might make you look like a wizard to your non-technical friends. Use responsibly.
-
-Made with ☕ and questionable life choices.
