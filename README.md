@@ -144,7 +144,7 @@ Android 10+ blocks execution of binaries from writable directories. We bypass th
 
 ```bash
 # Clone the repo
-git clone https://github.com/yourusername/droidploy.git
+git clone https://github.com/YadavYashvant/droidploy.git
 cd droidploy
 
 # Add binaries to jniLibs
@@ -181,4 +181,3 @@ PRs welcome! Some ideas:
 - [ ] Python/Go server support
 - [ ] Auto-restart on crashes
 - [ ] Server monitoring dashboard
-- [ ] Multiple tunnel support
