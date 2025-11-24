@@ -4,7 +4,7 @@
 
 ## What is this?
 
-Droidploy lets you run actual Node.js backends **on your Android phone** and deploy them to the internet with zero hassle. No root required, no sketchy workarounds—just pure Android magic.
+Droidploy lets you run Node.js backends **on your Android phone** and deploy them to the internet. No root required, no sketchy workarounds—just pure Android magic.
 
 ## Why would I want this?
 
