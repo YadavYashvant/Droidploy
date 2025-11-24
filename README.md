@@ -131,8 +131,6 @@ Android 10+ blocks execution of binaries from writable directories. We bypass th
 - Creates DNS CNAME automatically
 - Uses QUIC protocol with hardcoded edge IPs (DNS workaround)
 
-See the [attached research document](#) for the full 8000-word deep dive on why this is so complicated 😅
-
 ## Tech Stack
 
 - **Kotlin** - Android app
@@ -183,4 +181,3 @@ PRs welcome! Some ideas:
 - [ ] Python/Go server support
 - [ ] Auto-restart on crashes
 - [ ] Server monitoring dashboard
-- [ ] Multiple tunnel support
